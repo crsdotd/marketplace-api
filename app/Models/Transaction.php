@@ -87,38 +87,3 @@ class Transaction extends Model
         return $this->isBuyer($user) || $this->isSeller($user);
     }
 }
-
-// ──────────────────────────────────────────────────────────
-
-class TransactionPayment extends Model
-{
-    
-}
-
-// ──────────────────────────────────────────────────────────
-
-class TransactionTimeline extends Model
-{
-    
-}
-
-// ──────────────────────────────────────────────────────────
-
-class Refund extends Model
-{
-    
-}
-
-// ──────────────────────────────────────────────────────────
-
-class Withdrawal extends Model
-{
-    
-}
-
-// ──────────────────────────────────────────────────────────
-
-class PlatformBankAccount extends Model
-{
-
-}

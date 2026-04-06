@@ -750,3 +750,97 @@
 [stacktrace]
 #0 {main}
 "} 
+[2026-04-06 22:59:45] local.ERROR: Cannot declare class App\Models\Category, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Models\\Category, because the name is already in use at C:/laragon/www/marketplace-api/app/Models/Product.php:93)
+[stacktrace]
+#0 {main}
+"} 
+[2026-04-06 23:49:52] local.ERROR: Cannot declare class App\Models\LiveLocation, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Models\\LiveLocation, because the name is already in use at C:/laragon/www/marketplace-api/app/Models/Rating.php:40)
+[stacktrace]
+#0 {main}
+"} 
+[2026-04-07 01:03:31] local.ERROR: Cannot declare class App\Models\Refund, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Models\\Refund, because the name is already in use at C:/laragon/www/marketplace-api/app/Models/Transaction.php:107)
+[stacktrace]
+#0 {main}
+"} 
+[2026-04-07 01:07:05] local.ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'marketplace_db.cache' doesn't exist (Connection: mysql, SQL: delete from `cache`) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 42S02): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'marketplace_db.cache' doesn't exist (Connection: mysql, SQL: delete from `cache`) at C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php:825)
+[stacktrace]
+#0 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(779): Illuminate/Database/Connection->runQueryCallback('delete from `ca...', Array, Object(Closure))
+#1 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(584): Illuminate/Database/Connection->run('delete from `ca...', Array, Object(Closure))
+#2 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(548): Illuminate/Database/Connection->affectingStatement('delete from `ca...', Array)
+#3 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(4024): Illuminate/Database/Connection->delete('delete from `ca...', Array)
+#4 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Cache/DatabaseStore.php(422): Illuminate/Database/Query/Builder->delete()
+#5 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Cache/Repository.php(792): Illuminate/Cache/DatabaseStore->flush()
+#6 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Cache/Console/ClearCommand.php(69): Illuminate/Cache/Repository->__call('flush', Array)
+#7 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Cache/Console/ClearCommand->handle()
+#8 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#9 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#10 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#11 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#12 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#13 C:/laragon/www/marketplace-api/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArrayInput), Object(Illuminate/Console/OutputStyle))
+#14 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArrayInput), Object(Illuminate/Console/OutputStyle))
+#15 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Concerns/CallsCommands.php(68): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArrayInput), Object(Symfony/Component/Console/Output/NullOutput))
+#16 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Concerns/CallsCommands.php(41): Illuminate/Console/Command->runCommand('cache:clear', Array, Object(Symfony/Component/Console/Output/NullOutput))
+#17 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Concerns/CallsCommands.php(53): Illuminate/Console/Command->callSilent('cache:clear', Array)
+#18 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/OptimizeClearCommand.php(48): Illuminate/Console/Command->callSilently('cache:clear')
+#19 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/View/Components/Task.php(40): Illuminate/Foundation/Console/OptimizeClearCommand->Illuminate/Foundation/Console/{closure}()
+#20 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/View/Components/Factory.php(60): Illuminate/Console/View/Components/Task->render('cache', Object(Closure))
+#21 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/OptimizeClearCommand.php(48): Illuminate/Console/View/Components/Factory->__call('task', Array)
+#22 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Foundation/Console/OptimizeClearCommand->handle()
+#23 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#24 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#25 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#26 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#27 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#28 C:/laragon/www/marketplace-api/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#29 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#30 C:/laragon/www/marketplace-api/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#31 C:/laragon/www/marketplace-api/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Foundation/Console/OptimizeClearCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#32 C:/laragon/www/marketplace-api/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#33 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#34 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#35 C:/laragon/www/marketplace-api/artisan(12): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#36 {main}
+
+[previous exception] [object] (PDOException(code: 42S02): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'marketplace_db.cache' doesn't exist at C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php:592)
+[stacktrace]
+#0 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(592): PDO->prepare('delete from `ca...')
+#1 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(812): Illuminate/Database/Connection->Illuminate/Database/{closure}('delete from `ca...', Array)
+#2 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(779): Illuminate/Database/Connection->runQueryCallback('delete from `ca...', Array, Object(Closure))
+#3 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(584): Illuminate/Database/Connection->run('delete from `ca...', Array, Object(Closure))
+#4 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Connection.php(548): Illuminate/Database/Connection->affectingStatement('delete from `ca...', Array)
+#5 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(4024): Illuminate/Database/Connection->delete('delete from `ca...', Array)
+#6 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Cache/DatabaseStore.php(422): Illuminate/Database/Query/Builder->delete()
+#7 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Cache/Repository.php(792): Illuminate/Cache/DatabaseStore->flush()
+#8 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Cache/Console/ClearCommand.php(69): Illuminate/Cache/Repository->__call('flush', Array)
+#9 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Cache/Console/ClearCommand->handle()
+#10 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#11 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#12 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#13 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#14 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#15 C:/laragon/www/marketplace-api/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArrayInput), Object(Illuminate/Console/OutputStyle))
+#16 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArrayInput), Object(Illuminate/Console/OutputStyle))
+#17 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Concerns/CallsCommands.php(68): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArrayInput), Object(Symfony/Component/Console/Output/NullOutput))
+#18 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Concerns/CallsCommands.php(41): Illuminate/Console/Command->runCommand('cache:clear', Array, Object(Symfony/Component/Console/Output/NullOutput))
+#19 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Concerns/CallsCommands.php(53): Illuminate/Console/Command->callSilent('cache:clear', Array)
+#20 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/OptimizeClearCommand.php(48): Illuminate/Console/Command->callSilently('cache:clear')
+#21 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/View/Components/Task.php(40): Illuminate/Foundation/Console/OptimizeClearCommand->Illuminate/Foundation/Console/{closure}()
+#22 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/View/Components/Factory.php(60): Illuminate/Console/View/Components/Task->render('cache', Object(Closure))
+#23 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/OptimizeClearCommand.php(48): Illuminate/Console/View/Components/Factory->__call('task', Array)
+#24 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Foundation/Console/OptimizeClearCommand->handle()
+#25 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#26 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#27 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#28 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#29 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#30 C:/laragon/www/marketplace-api/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#31 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#32 C:/laragon/www/marketplace-api/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#33 C:/laragon/www/marketplace-api/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Foundation/Console/OptimizeClearCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#34 C:/laragon/www/marketplace-api/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#35 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#36 C:/laragon/www/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#37 C:/laragon/www/marketplace-api/artisan(12): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#38 {main}
+"} 
