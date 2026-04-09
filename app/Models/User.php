@@ -7,28 +7,36 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\{HasOne, HasMany};
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'password', 'role',
+        'name', 'email', 'phone', 'password',
+        'is_buyer', 'is_seller', 'is_admin',
         'avatar', 'wa_number', 'is_verified', 'is_active',
         'balance', 'fcm_token',
     ];
 
-    protected $hidden = ['password', 'remember_token', 'fcm_token'];
+    protected $hidden = [
+        'password', 'remember_token', 'fcm_token',
+    ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_buyer'          => 'boolean',
+        'is_seller'         => 'boolean',
+        'is_admin'          => 'boolean',
         'is_verified'       => 'boolean',
         'is_active'         => 'boolean',
         'balance'           => 'decimal:2',
     ];
 
     // ── Relationships ──────────────────────────────────────────
+
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
@@ -74,19 +82,41 @@ class User extends Authenticatable
         return $this->hasMany(Withdrawal::class);
     }
 
-    // ── Helpers ───────────────────────────────────────────────
+    // ── Role Helpers ──────────────────────────────────────────
+
     public function isSeller(): bool
     {
-        return $this->role === 'seller';
+        return $this->is_seller === true;
+    }
+
+    public function isBuyer(): bool
+    {
+        return $this->is_buyer === true;
     }
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->is_admin === true;
+    }
+
+    // Cek apakah user sudah aktifkan mode seller
+    public function hasSellerProfile(): bool
+    {
+        return $this->isSeller() && $this->sellerProfile !== null;
     }
 
     public function getAvatarUrlAttribute(): ?string
     {
         return $this->avatar ? asset('storage/' . $this->avatar) : null;
+    }
+
+    // Untuk response API — tampilkan role aktif user
+    public function getRolesAttribute(): array
+    {
+        $roles = [];
+        if ($this->is_buyer)  $roles[] = 'buyer';
+        if ($this->is_seller) $roles[] = 'seller';
+        if ($this->is_admin)  $roles[] = 'admin';
+        return $roles;
     }
 }

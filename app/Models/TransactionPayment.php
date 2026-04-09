@@ -8,15 +8,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TransactionPayment extends Model
 {
     protected $fillable = [
-        'transaction_id', 'method', 'bank_name', 'bank_account', 'bank_holder',
-        'amount', 'proof_image', 'status', 'paid_at', 'verified_at',
-        'verified_by', 'reject_reason',
+        'transaction_id',
+        'midtrans_order_id',
+        'midtrans_transaction_id',
+        'midtrans_token',
+        'midtrans_redirect_url',
+        'midtrans_va_number',
+        'midtrans_payment_type',
+        'amount',
+        'status',
+        'midtrans_response',
+        'paid_at',
+        'expired_at',
     ];
 
     protected $casts = [
-        'amount'      => 'decimal:2',
-        'paid_at'     => 'datetime',
-        'verified_at' => 'datetime',
+        'amount'             => 'decimal:2',
+        'paid_at'            => 'datetime',
+        'expired_at'         => 'datetime',
+        'midtrans_response'  => 'array',
     ];
 
     public function transaction(): BelongsTo
@@ -24,13 +34,30 @@ class TransactionPayment extends Model
         return $this->belongsTo(Transaction::class);
     }
 
-    public function verifier(): BelongsTo
+    public function isPaid(): bool
     {
-        return $this->belongsTo(User::class, 'verified_by');
+        return $this->status === 'success';
     }
 
-    public function getProofImageUrlAttribute(): ?string
+    public function isPending(): bool
     {
-        return $this->proof_image ? asset('storage/' . $this->proof_image) : null;
+        return $this->status === 'pending';
+    }
+
+    // Label metode pembayaran yang lebih mudah dibaca
+    public function getPaymentTypeLabelAttribute(): string
+    {
+        return match($this->midtrans_payment_type) {
+            'credit_card'        => 'Kartu Kredit',
+            'bank_transfer'      => 'Transfer Bank',
+            'echannel'           => 'Mandiri Bill',
+            'gopay'              => 'GoPay',
+            'shopeepay'          => 'ShopeePay',
+            'qris'               => 'QRIS',
+            'dana'               => 'DANA',
+            'cstore'             => 'Indomaret / Alfamart',
+            'akulaku'            => 'Akulaku',
+            default              => $this->midtrans_payment_type ?? 'Tidak diketahui',
+        };
     }
 }
