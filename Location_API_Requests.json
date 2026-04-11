@@ -1,0 +1,219 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Marketplace API - Location Autocomplete",
+  "dateExport": "2024-01-15T10:00:00.000Z",
+  "version": "1.1",
+  "folders": [
+    {
+      "name": "Location Endpoints",
+      "requests": [
+        {
+          "name": "Search Locations",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/search",
+          "params": [
+            {
+              "name": "q",
+              "value": "Jakarta",
+              "isActive": true
+            },
+            {
+              "name": "language",
+              "value": "id",
+              "isActive": false
+            },
+            {
+              "name": "country",
+              "value": "ID",
+              "isActive": false
+            }
+          ],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ],
+          "tests": [],
+          "notes": "Search locations dengan query pencarian\n\nParameters:\n- q: query pencarian (min 2 karakter)\n- language: bahasa (default: id)\n- country: kode negara ISO (default: ID)"
+        },
+        {
+          "name": "Get Location Suggestions",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/suggestions",
+          "params": [
+            {
+              "name": "q",
+              "value": "Ban",
+              "isActive": true
+            }
+          ],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ],
+          "tests": [],
+          "notes": "Get location suggestions dalam format yang lebih simple untuk autocomplete\n\nResponse includes:\n- id: Google Maps Place ID\n- label: Nama lokasi utama\n- description: Alamat lengkap\n- latitude/longitude: Koordinat"
+        },
+        {
+          "name": "Reverse Geocoding",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/reverse",
+          "params": [
+            {
+              "name": "latitude",
+              "value": "-6.2088",
+              "isActive": true
+            },
+            {
+              "name": "longitude",
+              "value": "106.8456",
+              "isActive": true
+            },
+            {
+              "name": "language",
+              "value": "id",
+              "isActive": false
+            }
+          ],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ],
+          "tests": [],
+          "notes": "Dapatkan nama lokasi dari koordinat latitude/longitude\n\nParameters:\n- latitude: -90 sampai 90\n- longitude: -180 sampai 180"
+        }
+      ]
+    },
+    {
+      "name": "Product Operations with Location",
+      "requests": [
+        {
+          "name": "Create Product with Location",
+          "method": "POST",
+          "url": "{{base_url}}/api/v1/products",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{access_token}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"title\": \"Sepeda Gunung Premium\",\n  \"description\": \"Sepeda gunung berkualitas tinggi, kondisi seperti baru\",\n  \"price\": 1500000,\n  \"category_id\": 5,\n  \"stock\": 1,\n  \"condition\": \"used\",\n  \"transaction_type\": \"both\",\n  \"location_city\": \"Jakarta\",\n  \"location_province\": \"DKI Jakarta\",\n  \"location_place_id\": \"ChIJ-bvJl...\",\n  \"location_address\": \"Jakarta, Daerah Khusus Ibukota Jakarta, Indonesia\",\n  \"latitude\": -6.2088,\n  \"longitude\": 106.8456\n}"
+          },
+          "tests": [],
+          "notes": "Buat produk baru dengan detail lokasi dari autocomplete API"
+        },
+        {
+          "name": "Update Product Location",
+          "method": "PUT",
+          "url": "{{base_url}}/api/v1/products/{{product_id}}",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{access_token}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"location_city\": \"Bandung\",\n  \"location_province\": \"Jawa Barat\",\n  \"location_place_id\": \"ChIJ...\",\n  \"latitude\": -6.9175,\n  \"longitude\": 107.6062\n}"
+          },
+          "tests": [],
+          "notes": "Update lokasi produk"
+        }
+      ]
+    },
+    {
+      "name": "Test Examples",
+      "requests": [
+        {
+          "name": "Search Jakarta",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/search?q=Jakarta",
+          "headers": [],
+          "tests": [],
+          "notes": "Search untuk Jakarta"
+        },
+        {
+          "name": "Search Bandung",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/search?q=Bandung",
+          "headers": [],
+          "tests": [],
+          "notes": "Search untuk Bandung"
+        },
+        {
+          "name": "Search Surabaya",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/search?q=Surabaya",
+          "headers": [],
+          "tests": [],
+          "notes": "Search untuk Surabaya"
+        },
+        {
+          "name": "Suggestions - Ban",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/suggestions?q=Ban",
+          "headers": [],
+          "tests": [],
+          "notes": "Suggestions untuk 'Ban' (akan match Bandung, Banjarmasin, dll)"
+        },
+        {
+          "name": "Reverse - Jakarta Coordinates",
+          "method": "GET",
+          "url": "{{base_url}}/api/v1/locations/reverse?latitude=-6.2088&longitude=106.8456",
+          "headers": [],
+          "tests": [],
+          "notes": "Reverse geocode untuk koordinat Jakarta"
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "name": "access_token",
+      "value": ""
+    },
+    {
+      "name": "product_id",
+      "value": ""
+    }
+  ]
+}

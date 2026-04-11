@@ -13,6 +13,8 @@ use App\Http\Controllers\API\ChatController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\WalletController;
 use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\API\LocationController;
+use App\Http\Controllers\API\SocialAuthController;
 
 Route::prefix('v1')->group(function () {
 
@@ -21,6 +23,17 @@ Route::prefix('v1')->group(function () {
     // ════════════════════════════════════════
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login',    [AuthController::class, 'login']);
+
+    // ── Social Authentication (Google & Facebook) ────
+    Route::get('/auth/google',           [SocialAuthController::class, 'redirectToGoogle']);
+    Route::get('/auth/google/callback',  [SocialAuthController::class, 'handleGoogleCallback']);
+    Route::get('/login/google',          [SocialAuthController::class, 'redirectToGoogle']);
+    Route::get('/login/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+
+    Route::get('/auth/facebook',           [SocialAuthController::class, 'redirectToFacebook']);
+    Route::get('/auth/facebook/callback',  [SocialAuthController::class, 'handleFacebookCallback']);
+    Route::get('/login/facebook',          [SocialAuthController::class, 'redirectToFacebook']);
+    Route::get('/login/facebook/callback', [SocialAuthController::class, 'handleFacebookCallback']);
 
     Route::get('/categories',                     [CategoryController::class, 'index']);
     Route::get('/categories/{category}/products', [CategoryController::class, 'products']);
@@ -32,6 +45,11 @@ Route::prefix('v1')->group(function () {
     Route::get('/live-location/track/{token}', [LiveLocationController::class, 'track']);
     Route::get('/ads/packages',                [AdController::class, 'packages']);
     Route::get('/bank-accounts',               [TransactionController::class, 'platformBankAccounts']);
+    
+    // ── Locations (Autocomplete) ──────────────
+    Route::get('/locations/search',       [LocationController::class, 'search']);
+    Route::get('/locations/suggestions',  [LocationController::class, 'suggestions']);
+    Route::get('/locations/reverse',      [LocationController::class, 'reverse']);
 
     // Midtrans akan POST ke URL ini setiap ada update pembayaran
     Route::post('/payment/notification', [PaymentController::class, 'notification']);
@@ -49,6 +67,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/me',               [AuthController::class, 'me']);
         Route::put('/me',               [AuthController::class, 'updateProfile']);
         Route::post('/change-password', [AuthController::class, 'changePassword']);
+
+        // ── Social Account Management ────────────────
+        Route::delete('/auth/social/{provider}', [SocialAuthController::class, 'unlinkSocialAccount']);
 
         // ── Aktivasi Seller ───────────────────────────
         // Dipanggil saat user klik "Mulai Berjualan" di aplikasi

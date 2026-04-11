@@ -19,10 +19,11 @@ class User extends Authenticatable
         'is_buyer', 'is_seller', 'is_admin',
         'avatar', 'wa_number', 'is_verified', 'is_active',
         'balance', 'fcm_token',
+        'provider', 'provider_id', 'provider_token', 'provider_refresh_token',
     ];
 
     protected $hidden = [
-        'password', 'remember_token', 'fcm_token',
+        'password', 'remember_token', 'fcm_token', 'provider_token', 'provider_refresh_token',
     ];
 
     protected $casts = [

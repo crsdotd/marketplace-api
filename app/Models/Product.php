@@ -14,7 +14,8 @@ class Product extends Model
     protected $fillable = [
         'user_id', 'category_id', 'title', 'slug', 'description',
         'price', 'stock', 'condition', 'status', 'transaction_type',
-        'location_city', 'location_province', 'latitude', 'longitude',
+        'location_city', 'location_province', 'location_place_id', 'location_address',
+        'latitude', 'longitude',
         'view_count', 'rating_avg', 'rating_count', 'is_promoted', 'promoted_until',
     ];
 
