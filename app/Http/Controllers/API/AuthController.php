@@ -287,35 +287,72 @@ class AuthController extends Controller
     }
 
     /**
-     * PUT /api/v1/me
-     */
+    * PUT /api/v1/me
+    * Update profil user termasuk social media
+    */
     public function updateProfile(Request $request): JsonResponse
     {
         $user = $request->user();
 
         $validator = Validator::make($request->all(), [
+            // Data user
             'name'      => 'sometimes|string|max:255',
             'wa_number' => 'sometimes|string|max:20',
             'avatar'    => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',
+
+            // Data profil
             'bio'       => 'sometimes|string|max:500',
             'address'   => 'sometimes|string',
             'city'      => 'sometimes|string|max:100',
             'province'  => 'sometimes|string|max:100',
             'latitude'  => 'sometimes|numeric|between:-90,90',
             'longitude' => 'sometimes|numeric|between:-180,180',
+
+            // Social media — array of objects
+            'social_media'        => 'sometimes|array|max:10',
+            'social_media.*.name' => 'required_with:social_media|string|max:50',
+            'social_media.*.url'  => 'required_with:social_media|string|url|max:255',
+
+            // Seller
+            'shop_name'        => 'sometimes|string|max:255',
+            'shop_description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'errors'  => $validator->errors(),
+            ], 422);
         }
 
+        // Upload avatar jika ada
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->update(['avatar' => $path]);
         }
 
+        // Update data user
         $user->update($request->only(['name', 'wa_number']));
-        $user->profile->update($request->only(['bio', 'address', 'city', 'province', 'latitude', 'longitude']));
+
+        // Update profil — termasuk social_media
+        $profileData = $request->only([
+            'bio', 'address', 'city', 'province', 'latitude', 'longitude',
+        ]);
+
+        // Proses social_media jika dikirim
+        if ($request->has('social_media')) {
+            $profileData['social_media'] = $request->social_media;
+        }
+
+        $user->profile->update($profileData);
+
+        // Update seller profile jika ada
+        if ($user->isSeller() && $user->sellerProfile) {
+        $user->sellerProfile->update(
+            $request->only(['shop_name', 'shop_description'])
+            );
+        }
 
         return response()->json([
             'success' => true,
