@@ -120,9 +120,39 @@ Route::prefix('v1')->group(function () {
         });
 
         // ── Refund ────────────────────────────────────
-        Route::get('/refunds',        [RefundController::class, 'index']);
-        Route::post('/refunds',       [RefundController::class, 'store']);
-        Route::get('/refunds/{refund}',[RefundController::class, 'show']);
+        // ── BUYER: Refund ─────────────────────────────────────────────
+        // Ganti route refund yang lama dengan yang baru ini
+
+        Route::prefix('refunds')->group(function () {
+            // Buyer: list refund saya
+            Route::get('/', [RefundController::class, 'index']);
+
+            // Buyer: ajukan refund baru
+            Route::post('/', [RefundController::class, 'store']);
+
+            // Buyer & Seller: detail refund
+            Route::get('/{refund}', [RefundController::class, 'show']);
+
+            // Buyer: eskalasi ke admin jika seller menolak
+            Route::post('/{refund}/escalate', [RefundController::class, 'escalate']);
+        });
+
+
+        // ── SELLER: Tangani Refund ────────────────────────────────────
+        Route::prefix('seller/refunds')->group(function () {
+            // Seller: list semua refund yang masuk
+            // ?status=pending | seller_reviewing | seller_approved | seller_rejected
+            Route::get('/', [RefundController::class, 'sellerIndex']);
+
+            // Seller: mulai review (ubah status ke reviewing)
+            Route::put('/{refund}/review', [RefundController::class, 'sellerReview']);
+
+            // Seller: setujui refund
+            Route::post('/{refund}/approve', [RefundController::class, 'sellerApprove']);
+
+            // Seller: tolak refund (wajib isi seller_note)
+            Route::post('/{refund}/reject', [RefundController::class, 'sellerReject']);
+        });
 
         // ── Ads ───────────────────────────────────────
         Route::get('/ads/packages', [AdController::class, 'packages']);
