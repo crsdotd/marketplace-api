@@ -53,9 +53,10 @@ class PaymentController extends Controller
         }
 
         // Cek apakah sudah ada payment pending
-        $existingPayment = TransactionPayment::where('transaction_id', $transaction->id)
-            ->where('status', 'pending')
-            ->first();
+            $existingPayment = TransactionPayment::where('transaction_id', $transaction->id)
+                ->whereIn('status', ['pending'])
+                ->where('expired_at', '>', now())  // belum expired
+                ->first();
 
         if ($existingPayment && $existingPayment->midtrans_token) {
             return response()->json([
@@ -67,6 +68,8 @@ class PaymentController extends Controller
                     'order_id'     => $existingPayment->midtrans_order_id,
                     'amount'       => $existingPayment->amount,
                     'expired_at'   => $existingPayment->expired_at,
+                    'client_key'    => config('midtrans.client_key'),    // ← tambahkan
+                    'is_production' => config('midtrans.is_production'), // ← tambahkan
                 ],
             ]);
         }
@@ -76,10 +79,12 @@ class PaymentController extends Controller
         $transaction->load(['buyer', 'seller', 'product']);
         $buyer = $transaction->buyer;
 
+        $orderId = $transaction->transaction_code . '-' . substr(md5($transaction->id . now()->format('Ymd')), 0, 6);
+
         // Buat parameter untuk Midtrans Snap
         $params = [
             'transaction_details' => [
-                'order_id'     => $transaction->transaction_code,
+                'order_id'     => $orderId,
                 'gross_amount' => (int) $transaction->final_amount,
             ],
             'item_details' => [
@@ -131,9 +136,13 @@ class PaymentController extends Controller
 
             DB::beginTransaction();
 
+            TransactionPayment::where('transaction_id', $transaction->id)
+                ->where('status', 'pending')
+                ->delete();
+
             TransactionPayment::create([
                 'transaction_id'      => $transaction->id,
-                'midtrans_order_id'   => $transaction->transaction_code,
+                'midtrans_order_id'   => $orderId,
                 'midtrans_token'      => $snapToken,
                 'midtrans_redirect_url' => $redirectUrl,
                 'amount'              => $transaction->final_amount,

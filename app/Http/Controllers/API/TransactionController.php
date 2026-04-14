@@ -262,46 +262,56 @@ class TransactionController extends Controller
      * Buyer konfirmasi barang diterima → dana cair ke seller
      */
     public function confirmReceived(Request $request, Transaction $transaction): JsonResponse
-    {
-        if (!$transaction->isBuyer($request->user())) {
-            return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
-        }
-
-        if (!in_array($transaction->status, ['shipped', 'delivered'])) {
-            return response()->json(['success' => false, 'message' => 'Status transaksi tidak valid.'], 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $transaction->update(['status' => 'completed']);
-
-            // Cairkan dana ke saldo seller (dikurangi platform fee)
-            $sellerAmount = $transaction->total_price;
-            $transaction->seller->increment('balance', $sellerAmount);
-
-            // Update statistik seller
-            $transaction->seller->sellerProfile?->increment('total_sold');
-
-            TransactionTimeline::create([
-                'transaction_id' => $transaction->id,
-                'status'         => 'completed',
-                'description'    => 'Pembeli mengkonfirmasi barang diterima. Dana sebesar Rp ' . number_format($sellerAmount) . ' dicairkan ke penjual.',
-                'created_by'     => $request->user()->id,
-            ]);
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Transaksi selesai. Terima kasih! Jangan lupa beri rating untuk penjual.',
-                'data'    => $transaction->fresh(),
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Gagal mengkonfirmasi transaksi.'], 500);
-        }
+{
+    if (!$transaction->isBuyer($request->user())) {
+        return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
     }
+
+    // ✅ Tambah 'payment_confirmed' dan 'processing' untuk fleksibilitas
+    $allowedStatuses = ['shipped', 'delivered', 'processing', 'payment_confirmed'];
+
+    if (!in_array($transaction->status, $allowedStatuses)) {
+        return response()->json([
+            'success' => false,
+            'message' => "Konfirmasi tidak bisa dilakukan. Status saat ini: {$transaction->status}",
+            'current_status' => $transaction->status,
+            'allowed_statuses' => $allowedStatuses,
+        ], 422);
+    }
+
+    DB::beginTransaction();
+    try {
+        $transaction->update(['status' => 'completed']);
+
+        // Cairkan dana ke saldo seller
+        $sellerAmount = $transaction->total_price;
+        $transaction->seller->increment('balance', $sellerAmount);
+
+        // Update statistik seller
+        $transaction->seller->sellerProfile?->increment('total_sold');
+
+        TransactionTimeline::create([
+            'transaction_id' => $transaction->id,
+            'status'         => 'completed',
+            'description'    => 'Pembeli mengkonfirmasi barang diterima. Dana Rp ' .
+                                number_format($sellerAmount, 0, ',', '.') .
+                                ' dicairkan ke penjual.',
+            'created_by'     => $request->user()->id,
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaksi selesai. Terima kasih! Jangan lupa beri rating untuk penjual.',
+            'data'    => $transaction->fresh(),
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['success' => false, 'message' => 'Gagal mengkonfirmasi transaksi.'], 500);
+    }
+}
 
     /**
      * GET /api/v1/bank-accounts
