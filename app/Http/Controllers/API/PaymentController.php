@@ -165,7 +165,7 @@ class PaymentController extends Controller
                 'data'    => [
                     'snap_token'    => $snapToken,
                     'redirect_url'  => $redirectUrl,
-                    'order_id'      => $transaction->transaction_code,
+                    'order_id'      => $orderId,
                     'amount'        => $transaction->final_amount,
                     'expired_at'    => $expiredAt,
                     // Client key untuk integrasi mobile SDK

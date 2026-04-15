@@ -147,69 +147,69 @@ class TransactionController extends Controller
     /**
      * POST /api/v1/transactions/{id}/payment
      */
-    public function uploadPayment(Request $request, Transaction $transaction): JsonResponse
-    {
-        if (!$transaction->isBuyer($request->user())) {
-            return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
-        }
+    // public function uploadPayment(Request $request, Transaction $transaction): JsonResponse
+    // {
+    //     if (!$transaction->isBuyer($request->user())) {
+    //         return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+    //     }
 
-        if ($transaction->type !== 'rekber') {
-            return response()->json(['success' => false, 'message' => 'Hanya untuk transaksi rekber.'], 422);
-        }
+    //     if ($transaction->type !== 'rekber') {
+    //         return response()->json(['success' => false, 'message' => 'Hanya untuk transaksi rekber.'], 422);
+    //     }
 
-        if ($transaction->status !== 'pending') {
-            return response()->json(['success' => false, 'message' => 'Status transaksi tidak valid.'], 422);
-        }
+    //     if ($transaction->status !== 'pending') {
+    //         return response()->json(['success' => false, 'message' => 'Status transaksi tidak valid.'], 422);
+    //     }
 
-        $validator = Validator::make($request->all(), [
-            'bank_name'    => 'required|string',
-            'bank_account' => 'required|string',
-            'bank_holder'  => 'required|string',
-            'proof_image'  => 'required|image|mimes:jpg,jpeg,png|max:5120',
-        ]);
+    //     $validator = Validator::make($request->all(), [
+    //         'bank_name'    => 'required|string',
+    //         'bank_account' => 'required|string',
+    //         'bank_holder'  => 'required|string',
+    //         'proof_image'  => 'required|image|mimes:jpg,jpeg,png|max:5120',
+    //     ]);
 
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
-        }
+    //     if ($validator->fails()) {
+    //         return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+    //     }
 
-        $path = $request->file('proof_image')->store('payment-proofs', 'public');
+    //     $path = $request->file('proof_image')->store('payment-proofs', 'public');
 
-        DB::beginTransaction();
-        try {
-            TransactionPayment::create([
-                'transaction_id' => $transaction->id,
-                'method'         => 'bank_transfer',
-                'bank_name'      => $request->bank_name,
-                'bank_account'   => $request->bank_account,
-                'bank_holder'    => $request->bank_holder,
-                'amount'         => $transaction->final_amount,
-                'proof_image'    => $path,
-                'status'         => 'pending',
-                'paid_at'        => now(),
-            ]);
+    //     DB::beginTransaction();
+    //     try {
+    //         TransactionPayment::create([
+    //             'transaction_id' => $transaction->id,
+    //             'method'         => 'bank_transfer',
+    //             'bank_name'      => $request->bank_name,
+    //             'bank_account'   => $request->bank_account,
+    //             'bank_holder'    => $request->bank_holder,
+    //             'amount'         => $transaction->final_amount,
+    //             'proof_image'    => $path,
+    //             'status'         => 'pending',
+    //             'paid_at'        => now(),
+    //         ]);
 
-            $transaction->update(['status' => 'payment_confirmed']);
+    //         $transaction->update(['status' => 'payment_confirmed']);
 
-            TransactionTimeline::create([
-                'transaction_id' => $transaction->id,
-                'status'         => 'payment_confirmed',
-                'description'    => 'Bukti pembayaran diunggah. Menunggu verifikasi admin.',
-                'created_by'     => $request->user()->id,
-            ]);
+    //         TransactionTimeline::create([
+    //             'transaction_id' => $transaction->id,
+    //             'status'         => 'payment_confirmed',
+    //             'description'    => 'Bukti pembayaran diunggah. Menunggu verifikasi admin.',
+    //             'created_by'     => $request->user()->id,
+    //         ]);
 
-            DB::commit();
+    //         DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Bukti transfer berhasil dikirim, menunggu verifikasi.',
-                'data'    => $transaction->fresh()->load('payment'),
-            ]);
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Bukti transfer berhasil dikirim, menunggu verifikasi.',
+    //             'data'    => $transaction->fresh()->load('payment'),
+    //         ]);
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Gagal mengunggah bukti.'], 500);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json(['success' => false, 'message' => 'Gagal mengunggah bukti.'], 500);
+    //     }
+    // }
 
     /**
      * PUT /api/v1/transactions/{id}/status
