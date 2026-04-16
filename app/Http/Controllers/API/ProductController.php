@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductTag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -21,7 +23,6 @@ class ProductController extends Controller
         $query = Product::with(['images', 'category', 'seller.sellerProfile'])
             ->active();
 
-        // Pencarian keyword
         if ($keyword = $request->search) {
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'LIKE', "%{$keyword}%")
@@ -29,25 +30,22 @@ class ProductController extends Controller
             });
         }
 
-        // Filter kategori
         if ($request->category_id) {
             $query->where('category_id', $request->category_id);
         }
 
-        // Filter kondisi
         if ($request->condition) {
             $query->where('condition', $request->condition);
         }
 
-        // Filter harga
         if ($request->min_price) {
             $query->where('price', '>=', $request->min_price);
         }
+
         if ($request->max_price) {
             $query->where('price', '<=', $request->max_price);
         }
 
-        // Filter jenis transaksi
         if ($request->transaction_type) {
             $query->where(function ($q) use ($request) {
                 $q->where('transaction_type', $request->transaction_type)
@@ -55,27 +53,23 @@ class ProductController extends Controller
             });
         }
 
-        // Filter lokasi berdasarkan radius (Haversine)
         if ($request->latitude && $request->longitude) {
             $query->nearby(
-                (float)$request->latitude,
-                (float)$request->longitude,
-                (int)($request->radius ?? 50)
+                (float) $request->latitude,
+                (float) $request->longitude,
+                (int) ($request->radius ?? 50)
             );
         }
 
-        // Filter kota
         if ($request->city) {
             $query->where('location_city', 'LIKE', "%{$request->city}%");
         }
 
-        // Promoted products tampil duluan
         if (!$request->latitude) {
             $query->orderByDesc('is_promoted');
         }
 
-        // Sorting
-        match($request->sort) {
+        match ($request->sort) {
             'price_asc'  => $query->orderBy('price', 'asc'),
             'price_desc' => $query->orderBy('price', 'desc'),
             'newest'     => $query->orderByDesc('created_at'),
@@ -96,7 +90,6 @@ class ProductController extends Controller
     public function show(Product $product): JsonResponse
     {
         $product->increment('view_count');
-
         $product->load([
             'images', 'category', 'tags',
             'seller.sellerProfile',
@@ -126,8 +119,8 @@ class ProductController extends Controller
             'transaction_type'  => 'required|in:cod,rekber,both',
             'location_city'     => 'required|string|max:100',
             'location_province' => 'required|string|max:100',
-            'latitude'          => 'sometimes|numeric|between:-90,90',
-            'longitude'         => 'sometimes|numeric|between:-180,180',
+            'latitude'          => 'sometimes|numeric',
+            'longitude'         => 'sometimes|numeric',
             'images'            => 'required|array|min:1|max:5',
             'images.*'          => 'image|mimes:jpg,jpeg,png,webp|max:2048',
             'tags'              => 'sometimes|array|max:10',
@@ -168,7 +161,7 @@ class ProductController extends Controller
 
             if ($request->tags) {
                 foreach ($request->tags as $tag) {
-                    $product->tags()->create(['tag' => strtolower($tag)]);
+                    $product->tags()->create(['tag' => strtolower(trim($tag))]);
                 }
             }
 
@@ -182,12 +175,13 @@ class ProductController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Gagal menyimpan produk.'], 500);
+            return response()->json(['success' => false, 'message' => 'Gagal menyimpan produk: ' . $e->getMessage()], 500);
         }
     }
 
     /**
      * PUT /api/v1/products/{id}
+     * Fix: proses setiap field secara eksplisit — termasuk images dan tags
      */
     public function update(Request $request, Product $product): JsonResponse
     {
@@ -205,26 +199,123 @@ class ProductController extends Controller
             'transaction_type'  => 'sometimes|in:cod,rekber,both',
             'location_city'     => 'sometimes|string|max:100',
             'location_province' => 'sometimes|string|max:100',
+            'latitude'          => 'sometimes|nullable|numeric',
+            'longitude'         => 'sometimes|nullable|numeric',
             'status'            => 'sometimes|in:active,inactive',
-            'latitude'          => 'sometimes|numeric',
-            'longitude'         => 'sometimes|numeric',
+            // Gambar baru (opsional — akan ditambahkan ke gambar yang sudah ada)
+            'images'            => 'sometimes|array|max:5',
+            'images.*'          => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            // Hapus gambar tertentu by id
+            'delete_image_ids'  => 'sometimes|array',
+            'delete_image_ids.*'=> 'integer|exists:product_images,id',
+            // Replace semua tags
+            'tags'              => 'sometimes|array|max:10',
+            'tags.*'            => 'string|max:50',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
         }
 
-        $product->update($request->only([
-            'category_id', 'title', 'description', 'price', 'stock',
-            'condition', 'transaction_type', 'location_city', 'location_province',
-            'latitude', 'longitude', 'status',
-        ]));
+        DB::beginTransaction();
+        try {
+            // ── Update field teks ──────────────────────────────────
+            $textFields = [
+                'category_id', 'title', 'description', 'price', 'stock',
+                'condition', 'transaction_type', 'location_city',
+                'location_province', 'latitude', 'longitude', 'status',
+            ];
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Produk berhasil diperbarui.',
-            'data'    => $product->fresh()->load(['images', 'category', 'tags']),
-        ]);
+            $updateData = [];
+            foreach ($textFields as $field) {
+                if ($request->has($field)) {
+                    $updateData[$field] = $request->input($field);
+                }
+            }
+
+            if (!empty($updateData)) {
+                // Update slug jika title berubah
+                if (isset($updateData['title'])) {
+                    $updateData['slug'] = Str::slug($updateData['title']) . '-' . Str::random(6);
+                }
+                $product->update($updateData);
+            }
+
+            // ── Hapus gambar tertentu (jika diminta) ───────────────
+            if ($request->has('delete_image_ids') && !empty($request->delete_image_ids)) {
+                $imagesToDelete = ProductImage::whereIn('id', $request->delete_image_ids)
+                    ->where('product_id', $product->id)
+                    ->get();
+
+                foreach ($imagesToDelete as $img) {
+                    Storage::disk('public')->delete($img->image_path);
+                    $img->delete();
+                }
+
+                // Set ulang primary jika yang dihapus adalah primary
+                $remaining = $product->images()->orderBy('sort_order')->first();
+                if ($remaining && !$product->images()->where('is_primary', true)->exists()) {
+                    $remaining->update(['is_primary' => true]);
+                }
+            }
+
+            // ── Upload gambar baru (tambahan) ──────────────────────
+            if ($request->hasFile('images')) {
+                $currentCount = $product->images()->count();
+                $newImages    = $request->file('images');
+                $totalAfter   = $currentCount + count($newImages);
+
+                if ($totalAfter > 5) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Total gambar tidak boleh lebih dari 5. Saat ini ada {$currentCount} gambar, kamu menambah " . count($newImages) . ".",
+                    ], 422);
+                }
+
+                $lastOrder = $product->images()->max('sort_order') ?? -1;
+
+                foreach ($newImages as $index => $image) {
+                    $path = $image->store('products', 'public');
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_path' => $path,
+                        'is_primary' => $currentCount === 0 && $index === 0,
+                        'sort_order' => $lastOrder + $index + 1,
+                    ]);
+                }
+            }
+
+            // ── Update tags (replace semua) ────────────────────────
+            if ($request->has('tags')) {
+                // Hapus semua tag lama
+                $product->tags()->delete();
+
+                // Simpan tag baru
+                if (!empty($request->tags)) {
+                    foreach ($request->tags as $tag) {
+                        if (!empty(trim($tag))) {
+                            $product->tags()->create(['tag' => strtolower(trim($tag))]);
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Produk berhasil diperbarui.',
+                'data'    => $product->fresh()->load(['images', 'category', 'tags']),
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui produk: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -236,6 +327,11 @@ class ProductController extends Controller
             return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
         }
 
+        // Hapus semua gambar dari storage
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+
         $product->delete();
         return response()->json(['success' => true, 'message' => 'Produk berhasil dihapus.']);
     }
@@ -245,7 +341,7 @@ class ProductController extends Controller
      */
     public function myProducts(Request $request): JsonResponse
     {
-        $products = Product::with(['images', 'category'])
+        $products = Product::with(['images', 'category', 'tags'])
             ->where('user_id', $request->user()->id)
             ->withCount('favorites')
             ->orderByDesc('created_at')

@@ -15,6 +15,7 @@ use App\Http\Controllers\API\WalletController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\SocialAuthController;
+use App\Http\Controllers\API\BarterController;
 
 Route::prefix('v1')->group(function () {
 
@@ -117,6 +118,28 @@ Route::prefix('v1')->group(function () {
             Route::post('/{liveLocation}/stop',               [LiveLocationController::class, 'stop']);
             Route::post('/meeting-point',                     [LiveLocationController::class, 'proposeMeetingPoint']);
             Route::put('/meeting-point/{meetingPoint}/agree', [LiveLocationController::class, 'agreeMeetingPoint']);
+        });
+
+        // ── Barter / Tukar Tambah ─────────────────────────────────────
+
+        // Webhook Midtrans untuk bayar selisih barter (PUBLIC — tidak butuh auth)
+        Route::post('/barter/payment/notification', [BarterController::class, 'paymentNotification']);
+
+        Route::middleware('auth:sanctum')->group(function () {
+
+            // Buyer
+            Route::get('/barter',              [BarterController::class, 'buyerIndex']);  // list barter saya
+            Route::post('/barter',             [BarterController::class, 'store']);       // ajukan barter
+            Route::get('/barter/{barter}',     [BarterController::class, 'show']);        // detail barter
+            Route::post('/barter/{barter}/cancel', [BarterController::class, 'cancel']); // batalkan
+            Route::post('/barter/{barter}/pay',    [BarterController::class, 'payAdditional']); // bayar selisih
+
+            // Seller
+            Route::get('/seller/barter',                         [BarterController::class, 'sellerIndex']);   // list masuk
+            Route::post('/seller/barter/{barter}/accept',        [BarterController::class, 'sellerAccept']);  // terima
+            Route::post('/seller/barter/{barter}/reject',        [BarterController::class, 'sellerReject']);  // tolak
+            Route::post('/seller/barter/{barter}/complete',      [BarterController::class, 'sellerComplete']); // selesaikan
+
         });
 
         // ── Refund ────────────────────────────────────
