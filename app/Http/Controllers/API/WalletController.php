@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Withdrawal;
 use App\Models\Transaction;
+use App\Models\UserBankAccount;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -31,10 +32,13 @@ class WalletController extends Controller
     public function withdraw(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'amount'       => 'required|numeric|min:10000',
-            'bank_name'    => 'required|string|max:100',
-            'bank_account' => 'required|string|max:30',
-            'bank_holder'  => 'required|string|max:255',
+            'amount'          => 'required|numeric|min:10000',
+            // Bisa kirim bank_account_id (dari database)
+            // ATAU kirim manual (bank_name, bank_account, bank_holder)
+            'bank_account_id' => 'sometimes|exists:user_bank_accounts,id',
+            'bank_name'       => 'required_without:bank_account_id|string|max:100',
+            'bank_account'    => 'required_without:bank_account_id|string|max:30',
+            'bank_holder'     => 'required_without:bank_account_id|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -44,26 +48,37 @@ class WalletController extends Controller
         $user = $request->user();
 
         if ($request->amount > $user->balance) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Saldo tidak mencukupi.',
-            ], 422);
+            return response()->json(['success' => false, 'message' => 'Saldo tidak mencukupi.'], 422);
         }
 
-        // Kurangi saldo & buat request withdrawal
+        // Ambil data bank dari database jika pakai bank_account_id
+        if ($request->bank_account_id) {
+            $bank = UserBankAccount::where('id', $request->bank_account_id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+
+            $bankName    = $bank->bank_name;
+            $bankAccount = $bank->account_number;
+            $bankHolder  = $bank->account_holder;
+        } else {
+            $bankName    = $request->bank_name;
+            $bankAccount = $request->bank_account;
+            $bankHolder  = $request->bank_holder;
+        }
+
         $user->decrement('balance', $request->amount);
 
         $withdrawal = Withdrawal::create([
             'user_id'      => $user->id,
             'amount'       => $request->amount,
-            'bank_name'    => $request->bank_name,
-            'bank_account' => $request->bank_account,
-            'bank_holder'  => $request->bank_holder,
+            'bank_name'    => $bankName,
+            'bank_account' => $bankAccount,
+            'bank_holder'  => $bankHolder,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Permintaan penarikan saldo berhasil dikirim. Akan diproses dalam 1x24 jam kerja.',
+            'message' => 'Permintaan penarikan berhasil dikirim. Akan diproses dalam 1x24 jam kerja.',
             'data'    => $withdrawal,
         ], 201);
     }

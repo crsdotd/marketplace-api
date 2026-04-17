@@ -16,6 +16,7 @@ use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\SocialAuthController;
 use App\Http\Controllers\API\BarterController;
+use App\Http\Controllers\API\BankAccountController;
 
 Route::prefix('v1')->group(function () {
 
@@ -140,6 +141,14 @@ Route::prefix('v1')->group(function () {
             Route::post('/seller/barter/{barter}/reject',        [BarterController::class, 'sellerReject']);  // tolak
             Route::post('/seller/barter/{barter}/complete',      [BarterController::class, 'sellerComplete']); // selesaikan
 
+        });
+
+        // Rekening bank user (berbeda dengan platform_bank_accounts)
+        Route::prefix('bank-accounts/my')->middleware('auth:sanctum')->group(function () {
+            Route::get('/',                        [BankAccountController::class, 'index']);
+            Route::post('/',                       [BankAccountController::class, 'store']);
+            Route::put('/{bankAccount}/set-default',[BankAccountController::class, 'setDefault']);
+            Route::delete('/{bankAccount}',        [BankAccountController::class, 'destroy']);
         });
 
         // ── Refund ────────────────────────────────────

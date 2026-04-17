@@ -99,6 +99,16 @@ class User extends Authenticatable
         return $this->hasMany(Withdrawal::class);
     }
 
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(UserBankAccount::class);
+    }
+
+    public function defaultBankAccount(): HasOne
+    {
+        return $this->hasOne(UserBankAccount::class)->where('is_default', true);
+    }
+
     // ── Role Helpers ──────────────────────────────────────────
 
     public function isSeller(): bool
