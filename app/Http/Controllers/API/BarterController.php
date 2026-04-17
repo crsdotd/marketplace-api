@@ -124,7 +124,18 @@ class BarterController extends Controller
         ->orderByDesc('created_at')
         ->paginate(15);
 
-        return response()->json(['success' => true, 'data' => $barters]);
+        // ✅ Sync status Midtrans untuk semua barter yang payment_pending
+        foreach ($barters->items() as $barter) {
+            if ($barter->status === 'payment_pending' && $barter->midtrans_order_id) {
+                $this->syncMidtransStatus($barter);
+            }
+        }
+
+        // Refresh data setelah sync
+        return response()->json([
+            'success' => true,
+            'data'    => $barters,
+        ]);
     }
 
     /**
@@ -139,9 +150,14 @@ class BarterController extends Controller
             return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
         }
 
+        // ✅ Sinkronisasi status Midtrans jika masih payment_pending
+        if ($barter->status === 'payment_pending' && $barter->midtrans_order_id) {
+        $this->syncMidtransStatus($barter);
+        }
+
         return response()->json([
             'success' => true,
-            'data'    => $barter->load([
+            'data'    => $barter->fresh()->load([
                 'product.images', 'offerCategory',
                 'buyer.profile', 'seller.sellerProfile',
             ]),
@@ -191,7 +207,18 @@ class BarterController extends Controller
         ->orderByDesc('created_at')
         ->paginate(15);
 
-        return response()->json(['success' => true, 'data' => $barters]);
+        // ✅ Sync status Midtrans untuk semua barter yang payment_pending
+        foreach ($barters->items() as $barter) {
+            if ($barter->status === 'payment_pending' && $barter->midtrans_order_id) {
+                $this->syncMidtransStatus($barter);
+            }
+        }
+
+        // Refresh data setelah sync
+        return response()->json([
+            'success' => true,
+            'data'    => $barters,
+        ]);
     }
 
     /**
@@ -430,6 +457,12 @@ class BarterController extends Controller
             return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
         }
 
+        // ✅ Sync dulu sebelum validasi status
+        if ($barter->status === 'payment_pending' && $barter->midtrans_order_id) {
+            $this->syncMidtransStatus($barter);
+            $barter->refresh(); // Ambil status terbaru setelah sync
+        }
+
         $allowedStatuses = ['accepted', 'payment_confirmed'];
         if (!in_array($barter->status, $allowedStatuses)) {
             return response()->json([
@@ -458,6 +491,43 @@ class BarterController extends Controller
         \Midtrans\Config::$isProduction = config('midtrans.is_production');
         \Midtrans\Config::$isSanitized  = config('midtrans.is_sanitized');
         \Midtrans\Config::$is3ds        = config('midtrans.is_3ds');
+    }
+
+    private function syncMidtransStatus(BarterRequest $barter): void
+    {
+        try {
+            $this->initMidtrans();
+
+            $statusMidtrans = \Midtrans\Transaction::status($barter->midtrans_order_id);
+            $mtStatus       = $statusMidtrans->transaction_status ?? null;
+            $fraudStatus    = $statusMidtrans->fraud_status ?? null;
+
+            // Jika sudah settlement atau capture → ubah ke payment_confirmed
+            if (in_array($mtStatus, ['settlement', 'capture']) && $fraudStatus !== 'deny') {
+                $barter->update(['status' => 'payment_confirmed']);
+
+                // Notifikasi ke seller bahwa buyer sudah bayar
+                try {
+                    $barter->seller->notify(
+                        new \App\Notifications\BarterRequestResponded($barter, 'payment_confirmed')
+                    );
+                } catch (\Exception $e) {
+                    // Abaikan error notifikasi
+                }
+
+                Log::info("Barter #{$barter->id} synced: payment_pending → payment_confirmed");
+        }
+
+            // Jika expired atau cancel → reset snap token agar bisa generate ulang
+            if (in_array($mtStatus, ['expire', 'cancel', 'deny'])) {
+                $barter->update(['midtrans_snap_token' => null]);
+                Log::info("Barter #{$barter->id} payment expired/cancelled");
+            }
+
+        } catch (\Exception $e) {
+            // Abaikan error — gunakan status lokal
+            Log::warning("Barter sync failed for #{$barter->id}: " . $e->getMessage());
+        }
     }
 
     private function generateBarterSnapToken(BarterRequest $barter, float $amount): ?array
