@@ -12,7 +12,9 @@ use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-
+use App\Models\UserProfile;    
+use App\Models\SellerProfile;  
+use Illuminate\Support\Facades\DB;
 class SocialAuthController extends Controller
 {
     /**
@@ -329,6 +331,7 @@ class SocialAuthController extends Controller
                         'avatar' => $socialUser->avatar,
                         'password' => bcrypt(Str::random(16)), // Random password
                         'is_buyer' => true,
+                        'is_seller' => true,
                         'is_verified' => true, // Auto-verified dengan social login
                         'is_active' => true,
                     ]);

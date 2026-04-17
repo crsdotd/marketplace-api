@@ -15,15 +15,31 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'password',
-        'is_buyer', 'is_seller', 'is_admin',
-        'avatar', 'wa_number', 'is_verified', 'is_active',
-        'balance', 'fcm_token',
-        'provider', 'provider_id', 'provider_token', 'provider_refresh_token',
+        'name',
+        'email',
+        'phone',
+        'password',
+        'is_buyer',
+        'is_seller',
+        'is_admin',
+        'avatar',
+        'wa_number',
+        'is_verified',
+        'is_active',
+        'balance',
+        'fcm_token',
+        'provider',
+        'provider_id',
+        'provider_token',
+        'provider_refresh_token',
     ];
 
     protected $hidden = [
-        'password', 'remember_token', 'fcm_token', 'provider_token', 'provider_refresh_token',
+        'password',
+        'remember_token',
+        'fcm_token',
+        'provider_token',
+        'provider_refresh_token',
     ];
 
     protected $casts = [
@@ -108,7 +124,13 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar ? asset('storage/' . $this->avatar) : null;
+        if (!$this->avatar) return null;
+
+        if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+            return $this->avatar;
+        }
+
+        return asset('storage/' . $this->avatar);
     }
 
     // Untuk response API — tampilkan role aktif user

@@ -47,7 +47,7 @@ class AuthController extends Controller
                 'password'  => Hash::make($request->password),
                 'wa_number' => $request->wa_number ?? $request->phone,
                 'is_buyer'  => true,   // otomatis bisa beli
-                'is_seller' => false,  // seller diaktifkan nanti
+                'is_seller' => true,  // seller diaktifkan nanti
                 'is_admin'  => false,
             ]);
 
@@ -57,7 +57,7 @@ class AuthController extends Controller
             DB::commit();
 
             $token = $user->createToken('auth_token')->plainTextToken;
-
+            $user->refresh();
             return response()->json([
                 'success' => true,
                 'message' => 'Registrasi berhasil. Selamat datang!',
@@ -67,7 +67,6 @@ class AuthController extends Controller
                     'roles' => $user->roles,
                 ],
             ], 201);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Gagal registrasi.'], 500);
@@ -86,7 +85,10 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -105,24 +107,65 @@ class AuthController extends Controller
             ], 403);
         }
 
-        if ($request->fcm_token) {
-            $user->update(['fcm_token' => $request->fcm_token]);
+        DB::beginTransaction();
+
+        try {
+            $updateData = [];
+
+            // otomatis aktifkan seller saat login
+            if (!$user->is_seller) {
+                $updateData['is_seller'] = true;
+            }
+
+            if ($request->filled('fcm_token')) {
+                $updateData['fcm_token'] = $request->fcm_token;
+            }
+
+            if (!empty($updateData)) {
+                $user->update($updateData);
+                $user->refresh();
+            }
+
+            // pastikan profile user ada
+            if (!$user->profile) {
+                UserProfile::create([
+                    'user_id' => $user->id,
+                ]);
+            }
+
+            // pastikan seller profile ada kalau seller aktif
+            if ($user->is_seller && !$user->sellerProfile) {
+                SellerProfile::create([
+                    'user_id' => $user->id,
+                    'shop_name' => $user->name . ' Shop',
+                    'shop_description' => '',
+                ]);
+            }
+
+            $user->tokens()->delete();
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil.',
+                'data'    => [
+                    'user'           => $user->fresh()->load(['profile', 'sellerProfile']),
+                    'token'          => $token,
+                    'roles'          => $user->fresh()->roles,
+                    'is_seller'      => true,
+                    'seller_profile' => $user->fresh()->sellerProfile,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        $user->tokens()->delete();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login berhasil.',
-            'data'    => [
-                'user'           => $user->load(['profile', 'sellerProfile']),
-                'token'          => $token,
-                'roles'          => $user->roles,       // ['buyer'] atau ['buyer','seller']
-                'is_seller'      => $user->is_seller,   // untuk cek di frontend
-                'seller_profile' => $user->sellerProfile, // null jika belum jadi seller
-            ],
-        ]);
     }
 
     /**
@@ -173,13 +216,15 @@ class AuthController extends Controller
 
             DB::commit();
 
+            $user->save();
+            $user->refresh();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Mode seller berhasil diaktifkan! Sekarang Anda bisa mulai berjualan.',
                 'data'    => $user->fresh()->load(['profile', 'sellerProfile']),
                 'roles'   => $user->fresh()->roles,
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Gagal mengaktifkan mode seller.'], 500);
@@ -252,7 +297,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user->update(['is_seller' => false]);
+        $user->update(['is_seller' => true]);
 
         return response()->json([
             'success' => true,
@@ -287,35 +332,31 @@ class AuthController extends Controller
     }
 
     /**
-    * PUT /api/v1/me
-    * Update profil user termasuk social media
-    */
+     * PUT /api/v1/me
+     * Update profil user termasuk social media
+     */
     public function updateProfile(Request $request): JsonResponse
     {
         $user = $request->user();
 
         $validator = Validator::make($request->all(), [
-            // Data user
-            'name'      => 'sometimes|string|max:255',
-            'wa_number' => 'sometimes|string|max:20',
+            'name'      => 'sometimes|nullable|string|max:255',
+            'wa_number' => 'sometimes|nullable|string|max:20',
             'avatar'    => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',
 
-            // Data profil
-            'bio'       => 'sometimes|string|max:500',
-            'address'   => 'sometimes|string',
-            'city'      => 'sometimes|string|max:100',
-            'province'  => 'sometimes|string|max:100',
-            'latitude'  => 'sometimes|numeric|between:-90,90',
-            'longitude' => 'sometimes|numeric|between:-180,180',
+            'bio'       => 'sometimes|nullable|string|max:500',
+            'address'   => 'sometimes|nullable|string',
+            'city'      => 'sometimes|nullable|string|max:100',
+            'province'  => 'sometimes|nullable|string|max:100',
+            'latitude'  => 'sometimes|nullable|numeric|between:-90,90',
+            'longitude' => 'sometimes|nullable|numeric|between:-180,180',
 
-            // Social media — array of objects
             'social_media'        => 'sometimes|array|max:10',
             'social_media.*.name' => 'required_with:social_media|string|max:50',
             'social_media.*.url'  => 'required_with:social_media|string|url|max:255',
 
-            // Seller
-            'shop_name'        => 'sometimes|string|max:255',
-            'shop_description' => 'sometimes|string',
+            'shop_name'        => 'sometimes|nullable|string|max:255',
+            'shop_description' => 'sometimes|nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -326,39 +367,75 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Upload avatar jika ada
-        if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->update(['avatar' => $path]);
+        DB::beginTransaction();
+
+        try {
+            if ($request->hasFile('avatar')) {
+                $path = $request->file('avatar')->store('avatars', 'public');
+                $user->update(['avatar' => $path]);
+            }
+
+            $userData = $request->only(['name', 'wa_number']);
+            if (!empty($userData)) {
+                $user->update($userData);
+            }
+
+            $profileData = $request->only([
+                'bio',
+                'address',
+                'city',
+                'province',
+                'latitude',
+                'longitude',
+            ]);
+
+            if ($request->has('social_media')) {
+                $profileData['social_media'] = $request->social_media;
+            }
+
+            $profile = $user->profile;
+            if (!$profile) {
+                $profile = UserProfile::create([
+                    'user_id' => $user->id,
+                ]);
+            }
+
+            if (!empty($profileData)) {
+                $profile->update($profileData);
+            }
+
+            if ($user->isSeller()) {
+                $sellerProfile = $user->sellerProfile;
+
+                if (!$sellerProfile) {
+                    $sellerProfile = SellerProfile::create([
+                        'user_id' => $user->id,
+                        'shop_name' => $request->shop_name ?? '',
+                        'shop_description' => $request->shop_description ?? '',
+                    ]);
+                }
+
+                $sellerData = $request->only(['shop_name', 'shop_description']);
+                if (!empty($sellerData)) {
+                    $sellerProfile->update($sellerData);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profil berhasil diperbarui.',
+                'data'    => $user->fresh()->load(['profile', 'sellerProfile']),
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        // Update data user
-        $user->update($request->only(['name', 'wa_number']));
-
-        // Update profil — termasuk social_media
-        $profileData = $request->only([
-            'bio', 'address', 'city', 'province', 'latitude', 'longitude',
-        ]);
-
-        // Proses social_media jika dikirim
-        if ($request->has('social_media')) {
-            $profileData['social_media'] = $request->social_media;
-        }
-
-        $user->profile->update($profileData);
-
-        // Update seller profile jika ada
-        if ($user->isSeller() && $user->sellerProfile) {
-        $user->sellerProfile->update(
-            $request->only(['shop_name', 'shop_description'])
-            );
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Profil berhasil diperbarui.',
-            'data'    => $user->fresh()->load(['profile', 'sellerProfile']),
-        ]);
     }
 
     /**
