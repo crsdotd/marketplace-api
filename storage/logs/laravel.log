@@ -2932,3 +2932,138 @@
 [stacktrace]
 #0 {main}
 "} 
+[2026-04-18 09:48:47] local.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/composer/ClassLoader.php:429)
+[stacktrace]
+#0 {main}
+"} 
+[2026-04-18 09:51:12] local.ERROR: Command "migrate:link" is not defined.
+
+Did you mean one of these?
+    migrate
+    migrate:fresh
+    migrate:install
+    migrate:refresh
+    migrate:reset
+    migrate:rollback
+    migrate:status
+    storage:link
+    storage:unlink {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"migrate:link\" is not defined.
+
+Did you mean one of these?
+    migrate
+    migrate:fresh
+    migrate:install
+    migrate:refresh
+    migrate:reset
+    migrate:rollback
+    migrate:status
+    storage:link
+    storage:unlink at D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/symfony/console/Application.php:759)
+[stacktrace]
+#0 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find('migrate:link')
+#1 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#2 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#3 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#4 D:/tugas/semester 4/project iae/clone/marketplace-api/artisan(12): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#5 {main}
+"} 
+[2026-04-18 10:27:59] local.ERROR: Route [login] not defined. {"exception":"[object] (Symfony\\Component\\Routing\\Exception\\RouteNotFoundException(code: 0): Route [login] not defined. at D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php:517)
+[stacktrace]
+#0 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php(853): Illuminate/Routing/UrlGenerator->route('login', Array, true)
+#1 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Configuration/ApplicationBuilder.php(278): route('login')
+#2 [internal function]: Illuminate/Foundation/Configuration/ApplicationBuilder->{closure:{closure:Illuminate/Foundation/Configuration/ApplicationBuilder::withMiddleware():276}:278}(Object(Illuminate/Http/Request))
+#3 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(118): call_user_func(Object(Closure), Object(Illuminate/Http/Request))
+#4 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(105): Illuminate/Auth/Middleware/Authenticate->redirectTo(Object(Illuminate/Http/Request))
+#5 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(88): Illuminate/Auth/Middleware/Authenticate->unauthenticated(Object(Illuminate/Http/Request), Array)
+#6 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(62): Illuminate/Auth/Middleware/Authenticate->authenticate(Object(Illuminate/Http/Request), Array)
+#7 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Auth/Middleware/Authenticate->handle(Object(Illuminate/Http/Request), Object(Closure), 'sanctum')
+#8 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(26): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#9 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->{closure:Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful::handle():25}(Object(Illuminate/Http/Request))
+#10 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate/Pipeline/Pipeline->{closure:Illuminate/Pipeline/Pipeline::prepareDestination():168}(Object(Illuminate/Http/Request))
+#11 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#12 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
+#13 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#14 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#15 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
+#16 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
+#17 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
+#18 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
+#19 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate/Foundation/Http/Kernel->{closure:Illuminate/Foundation/Http/Kernel::dispatchToRouter():198}(Object(Illuminate/Http/Request))
+#20 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->{closure:Illuminate/Pipeline/Pipeline::prepareDestination():168}(Object(Illuminate/Http/Request))
+#21 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#22 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
+#23 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#24 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#25 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#26 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#27 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
+#28 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#29 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
+#30 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#31 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
+#32 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#33 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
+#34 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#35 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks->handle(Object(Illuminate/Http/Request), Object(Closure))
+#36 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#37 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#38 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#39 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#40 D:/tugas/semester 4/project iae/clone/marketplace-api/public/index.php(17): Illuminate/Foundation/Application->handleRequest(Object(Illuminate/Http/Request))
+#41 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('D://tugas//semest...')
+#42 {main}
+"} 
+[2026-04-18 10:30:27] local.ERROR: Route [login] not defined. {"exception":"[object] (Symfony\\Component\\Routing\\Exception\\RouteNotFoundException(code: 0): Route [login] not defined. at D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php:517)
+[stacktrace]
+#0 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php(853): Illuminate/Routing/UrlGenerator->route('login', Array, true)
+#1 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Configuration/ApplicationBuilder.php(278): route('login')
+#2 [internal function]: Illuminate/Foundation/Configuration/ApplicationBuilder->{closure:{closure:Illuminate/Foundation/Configuration/ApplicationBuilder::withMiddleware():276}:278}(Object(Illuminate/Http/Request))
+#3 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(118): call_user_func(Object(Closure), Object(Illuminate/Http/Request))
+#4 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(105): Illuminate/Auth/Middleware/Authenticate->redirectTo(Object(Illuminate/Http/Request))
+#5 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(88): Illuminate/Auth/Middleware/Authenticate->unauthenticated(Object(Illuminate/Http/Request), Array)
+#6 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(62): Illuminate/Auth/Middleware/Authenticate->authenticate(Object(Illuminate/Http/Request), Array)
+#7 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Auth/Middleware/Authenticate->handle(Object(Illuminate/Http/Request), Object(Closure), 'sanctum')
+#8 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(26): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#9 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->{closure:Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful::handle():25}(Object(Illuminate/Http/Request))
+#10 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate/Pipeline/Pipeline->{closure:Illuminate/Pipeline/Pipeline::prepareDestination():168}(Object(Illuminate/Http/Request))
+#11 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#12 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
+#13 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#14 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#15 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
+#16 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
+#17 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
+#18 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
+#19 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate/Foundation/Http/Kernel->{closure:Illuminate/Foundation/Http/Kernel::dispatchToRouter():198}(Object(Illuminate/Http/Request))
+#20 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->{closure:Illuminate/Pipeline/Pipeline::prepareDestination():168}(Object(Illuminate/Http/Request))
+#21 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#22 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
+#23 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#24 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#25 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#26 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#27 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
+#28 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#29 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
+#30 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#31 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
+#32 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#33 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
+#34 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#35 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks->handle(Object(Illuminate/Http/Request), Object(Closure))
+#36 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():184}:185}(Object(Illuminate/Http/Request))
+#37 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#38 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#39 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#40 D:/tugas/semester 4/project iae/clone/marketplace-api/public/index.php(17): Illuminate/Foundation/Application->handleRequest(Object(Illuminate/Http/Request))
+#41 D:/tugas/semester 4/project iae/clone/marketplace-api/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('D://tugas//semest...')
+#42 {main}
+"} 
+[2026-04-18 12:36:26] local.WARNING: Barter sync failed for #1: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"aaa6c3c2-c2f5-4ed9-8dd3-58421150590f"}  
+[2026-04-18 12:37:00] local.WARNING: Barter sync failed for #1: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"ef0a3c9c-bb9a-481e-9c2e-ed9347a0ae4a"}  
+[2026-04-18 12:37:02] local.WARNING: Barter sync failed for #1: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"f15053bd-8f93-488a-bdd7-954d69f5c74b"}  
+[2026-04-18 12:42:15] local.INFO: Barter #1 synced: payment_pending → payment_confirmed  
+[2026-04-18 12:50:52] local.WARNING: Barter sync failed for #2: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"a81b43f1-ae7d-4f76-a82a-f4e094fc5b08"}  
+[2026-04-18 12:51:38] local.WARNING: Barter sync failed for #2: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"8dcfeef8-5920-479e-8815-f9afa5db961b"}  
+[2026-04-18 12:51:40] local.WARNING: Barter sync failed for #2: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"65290940-39db-481d-b23a-7f2f4a31458a"}  
+[2026-04-18 12:52:17] local.INFO: Barter #2 synced: payment_pending → payment_confirmed  

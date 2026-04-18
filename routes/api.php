@@ -97,11 +97,10 @@ Route::prefix('v1')->group(function () {
             Route::post('/{transaction}/payment', [TransactionController::class, 'uploadPayment']);
             Route::post('/{transaction}/confirm', [TransactionController::class, 'confirmReceived']);
             Route::put('/{transaction}/status',   [TransactionController::class, 'updateStatus']);
-
-            // Rating setelah transaksi selesai
-            Route::post('/{transaction}/rate-seller', [RatingController::class, 'rateAsBuyer']);
-            Route::post('/{transaction}/rate-buyer',  [RatingController::class, 'rateAsSeller']);
         });
+
+        // ── Rating ────────────────────────────────────
+        Route::post('/ratings', [RatingController::class, 'store']);
 
         // Buat pembayaran Midtrans (generate Snap Token)
         Route::post('/payment/create/{transaction}', [PaymentController::class, 'create']);

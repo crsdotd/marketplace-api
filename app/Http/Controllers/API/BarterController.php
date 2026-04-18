@@ -554,6 +554,11 @@ class BarterController extends Controller
                     'email'      => $buyer->email,
                     'phone'      => $buyer->phone,
                 ],
+                'callbacks' => [
+                    'finish'   => env('FRONTEND_URL', 'http://localhost:3000') . '/purchases',
+                    'unfinish' => env('FRONTEND_URL', 'http://localhost:3000') . '/purchases',
+                    'error'    => env('FRONTEND_URL', 'http://localhost:3000') . '/purchases',
+                ],
                 'expiry' => [
                     'start_time' => now()->format('Y-m-d H:i:s O'),
                     'unit'       => 'hours',
